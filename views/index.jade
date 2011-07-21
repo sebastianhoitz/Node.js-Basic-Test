@@ -1,0 +1,24 @@
+h1= title
+p Welcome to #{title}
+#message The message will be written here.
+
+label Message
+  input#mymessage(type="text", value="Foobar")
+input#send(type="submit", value="Senden!")
+
+script(type="text/javascript")
+  var socket = io.connect('http://localhost');
+  socket.on("message", function(data) {
+    $("#message").html(data.message);
+  });
+  socket.on('news', function (data) {
+    console.log(data);
+    socket.emit('my other event', { my: 'data' });
+  });
+  socket.on("new tweet", function(data) {
+    $("#message").html(data);
+  });
+  $("#send").click(function() {
+    console.log($("#mymessage").val());
+    socket.emit("message", { message: $("#mymessage").val() });
+  });
